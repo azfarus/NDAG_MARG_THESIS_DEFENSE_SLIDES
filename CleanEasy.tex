@@ -658,7 +658,7 @@ Therefore, improving orientation accuracy is critical for safety and user experi
 
 \section{Experimental Setup}
 
-\begin{frame}{Training to Predict Movement: Dataset}
+\begin{frame}{Training to Predict Movement & Noise: Dataset}
 \begin{itemize}
     \item \textbf{Movement Prediction Model:} Train \textbf{XGB classifier} to predict if the IMU is in motion.
     \item \textbf{Noise Prediction Model:} Train \textbf{XGB regressor} to predict noises in raw accelerometer data.
@@ -666,6 +666,80 @@ Therefore, improving orientation accuracy is critical for safety and user experi
 \end{itemize}
 
 \end{frame}
+
+\begin{frame}{Testing: Dataset}
+  \begin{itemize}
+    \item \textbf{Evaluation Setup:}  
+    Cross-validation set \{8, 14, 17, 22, 30\} used to estimate quaternions; error = mean quaternion distance between estimated and ground truth per recording.
+    
+    \item \textbf{Hyperparameter Selection:}  
+    Empirical tuning + grid search.  
+    Optimal values: $\alpha = 0.001$, $d_h = 120$, $d_l = 60$ (balancing drift, responsiveness, smoothness).
+    
+    \item \textbf{Dataset Dependence:}  
+    Parameters may be overfitted to dataset noise/motion patterns; may not generalize to other datasets or devices with different sensor characteristics.
+\end{itemize}
+
+\end{frame}
+
+% Frame 1: Experimental Turntable
+\begin{frame}{Testing: Mechanical Turntable}
+  \begin{itemize}
+      \item \textbf{Design \& Construction:}  
+      Built in Fusion360, 3D-printed PLA/ABS parts, 28 cm diameter, 1.5 kg mass.  
+      Manual actuation (no motor); rotation applied by hand.
+  
+      \item \textbf{Mechanical Components:}  
+      \begin{itemize}
+          \item Circular rotating disk on 6010 bearing.  
+          \item Box-shaped support structure with encoder magnet in base.  
+          \item AS5600 magnetic encoder for ground-truth sensing.
+      \end{itemize}
+  
+      \item \textbf{Ground-Truth Encoder (AS5600):}  
+      12-bit resolution ($\approx 0.087^{\circ}$/step), $\pm 0.4^{\circ}$ typical accuracy, up to $\pm 1.4^{\circ}$ deviation under misalignment.  
+      Latency: 1--2 ms, outputs via I2C, PWM, or analog.
+  
+      \item \textbf{On-Disk Payload:}  
+      Raspberry Pi 5 (8 GB), MPU9250 MARG sensor, 20,000 mAh power bank.
+  \end{itemize}
+  \end{frame}
+
+
+  \begin{frame}{Mechanical Turntable Setup}
+  \begin{figure}
+    \centering
+    \includegraphics[width=.85\linewidth]{logos/turntable_marked.png}  
+    \caption{Mechanical Turntable side view (left) and top view (right).}    
+    \label{fig:turntable}
+  \end{figure}
+  \end{frame}
+  
+  
+  % Frame 2: Motion Protocols & Software
+  \begin{frame}{Motion Protocols \& Software Setup}
+  \begin{itemize}
+      \item \textbf{Motion Protocols:}
+      \begin{itemize}
+          \item \textbf{Static:} No movement; tests sensor stability and drift.  
+          \item \textbf{Quasi-static:} Slow $0^{\circ}\!\!-\!180^{\circ}$ rotation (clockwise \& counterclockwise), two cycles per axis.  
+          \item \textbf{Dynamic:} Continuous rapid rotations (3, 4, 5 turns per cycle).
+      \end{itemize}
+  
+      \item \textbf{Software Infrastructure:}  
+      \begin{itemize}
+          \item Raspberry Pi runs 4 parallel Python scripts: Proposed Filter, AQUA, EKF, Madgwick.  
+          \item Reads MPU9250 sensor (accel, gyro, mag) via I2C.  
+          \item AS5600 encoder provides ground-truth quaternions.  
+          \item All filter outputs + ground truth logged into CSV for post-processing.
+      \end{itemize}
+  
+      \item \textbf{Result Generation:}  
+      Quaternion absolute distance metric (Sec. 9.2) computed and plotted to compare filter performance under each motion type.
+  \end{itemize}
+  \end{frame}
+  
+
 
 \section{Results}
 
@@ -772,61 +846,6 @@ The charts only compare the results on 5 files of the cv\_set containing [8, 14,
 
 \section{Future Works}
 
-\begin{frame}{3-Axis Gimbal System for Algorithm Testing}
-\begin{columns}[T]
-  % Text column
-  \begin{column}{0.5\textwidth}
-    \begin{itemize}
-      \item \textbf{Structure:} Three servos mounted orthogonally for yaw, pitch, roll.
-      \item \textbf{Feedback:} External encoders on each axis provide precise ground-truth angles \cite{gimbal3}.
-      \item \textbf{Static Test:} Fix servos at known angles (e.g., 30°, 90°) and compare with algorithm output.
-      \item \textbf{Dynamic Test:} Command smooth trajectories (0°→90°) while logging servo vs.\ filter estimates.
-    \end{itemize}
-  \end{column}
-  
-  % Figure column
-  \begin{column}{0.48\textwidth}
-    \begin{figure}
-      \centering
-      \includegraphics[width=\linewidth]{logos/gimball.jpg}
-      \caption{Mechanical 3-axis gimbal with servo motors and encoders.}
-      \label{fig:gimbal_system}
-    \end{figure}
-  \end{column}
-\end{columns}
-\end{frame}
-
-\begin{frame}{Single-Axis Turntable with Manual Tilting}
-\scriptsize
-\begin{columns}[T]
-  % Text column
-  \begin{column}{0.5\textwidth}
-    \begin{itemize}
-      \item \textbf{Low-cost alternative} to 3-axis gimbal for basic yaw control.
-      \item \textbf{Controlled Yaw:} Turntable provides precise single-axis rotation.
-      \item \textbf{Manual Pitch/Roll:} Tilting mechanism adjusts up–down and side–side angles.
-      \item \textbf{Setup Requirements:}
-        \begin{itemize}
-          \item Single-axis turntable.
-          \item Manual tilt mount for pitch & roll.
-          \item Stable platform aligning IMU axes with rotation/tilt axes.
-        \end{itemize}
-      \item \textbf{Testing Procedure:}
-        Place IMU at center, rotate known angles (e.g.\ 50° yaw), record gyroscope integration + accel/mag fusion estimates and compare to known rotation \cite{angle_sar}.
-    \end{itemize}
-  \end{column}
-  
-  % Figure column
-  \begin{column}{0.4\textwidth}
-    \begin{figure}
-      \centering
-      \includegraphics[width=\linewidth]{logos/Turntable.png}
-      \caption{Single-axis turntable with manual tilt mechanism.}
-      \label{fig:turntable_setup}
-    \end{figure}
-  \end{column}
-\end{columns}
-\end{frame}
 
 \begin{frame}{Evaluation Methodology}
 \scriptsize
