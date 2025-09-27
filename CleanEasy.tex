@@ -695,61 +695,270 @@ The charts only compare the results on 5 files of the cv\_set containing [8, 14,
     
 \end{frame}
 
-\begin{frame}{Results of $\alpha$-toggling and noise removal across individual files}
+\begin{frame}{Results of $\alpha$-toggling with and without denoising across cross-validation files in BROAD}
 \small
-\textcolor{red}{Red - Madgwick Filter} | \textcolor{green}{Green - Complementary Filter} | \textcolor{blue}{Blue - Our Proposed Filter} \\ 
-\textbf{X-axis:} iterations \\ \textbf{Y-axis:} mean error(lower the better)
 
 \begin{figure}
     \centering
-    \includegraphics[width=1\linewidth]{logos/9_undisturbed_fast_rotation_with_breaks_B.png}
-    \caption{9\_undisturbed\_fast\_rotation\_with\_breaks\_B}
-    \label{fig:9_undisturbed_fast_rotation}
+    \includegraphics[width=\linewidth,height=0.65\textheight,keepaspectratio]{logos/barchart_correct_slide.png}
+    \caption{Mean error statistics (with and with denonising) across cross-validation files in BROAD}
+    \label{fig:rmnoise_chart}
 \end{figure}
 \hfill
 \end{frame}
 
-\begin{frame}{Results of $\alpha$-toggling and noise removal across individual files}
+\begin{frame}{Static Error Metrics with and without ML Denoising}
 \small
-\textcolor{red}{Red - Madgwick Filter} | \textcolor{green}{Green - Complementary Filter} | \textcolor{blue}{Blue - Our Proposed Filter} \\ 
-\textbf{X-axis:} iterations \\ \textbf{Y-axis:} mean error(lower the better)
+\begin{minipage}{\textwidth}
+  \centering
+  \scriptsize
+  \captionof{table}{Static error metrics (°).}
+  \label{tab:static_ml}
+  \begin{tabular}{lccccc}
+    \toprule
+    Metric & Prop. (ML) & Prop. (no ML) & Madg. & Aqua & EKF \\
+    \midrule
+    mean  & 23.1  & 14.99 & 79.71 & \textit{\textbf{10.64}} & 39.05  \\
+    std   & 2.24  & \textit{\textbf{1.06}} & 8.44 & 2.16 & 19.18  \\
+    \bottomrule
+  \end{tabular}
+\end{minipage}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=1\linewidth]{logos/15_undisturbed_fast_translation_A.png}
-    \caption{15\_undisturbed\_fast\_translation\_A}
-    \label{fig:15_undisturbed_fast_translation}
-\end{figure}
+\vspace{0.5cm}
+
+\begin{minipage}{0.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{graphs/static_ml.png}
+  \captionof{figure}{Static Error with Denoising}
+\end{minipage}%
 \hfill
+\begin{minipage}{0.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{graphs/static_no_ml.png}
+  \captionof{figure}{Static Error without Denoising}
+\end{minipage}
+
 \end{frame}
 
-\begin{frame}{Results of $\alpha$-toggling and noise removal across individual files}
+\begin{frame}{Quasi-Static Error Metrics in X-axis}
 \small
-\textcolor{red}{Red - Madgwick Filter} | \textcolor{green}{Green - Complementary Filter} | \textcolor{blue}{Blue - Our Proposed Filter} \\ 
-\textbf{X-axis:} iterations \\ \textbf{Y-axis:} mean error(lower the better)
+\begin{minipage}{\textwidth}
+  \centering
+  \scriptsize
+  \captionof{table}{Quasi-Static error metrics (°) in X-axis}
+  \label{tab:quasi_static_x}
+  \begin{tabular}{lccccc}
+    \toprule
+    Metric & Prop. (ML) & Prop. (no ML) & Madg. & Aqua & EKF \\
+    \midrule
+    mean & 16.25 & 14.06 & 13.45 & \textit{\textbf{12.32}} & 52.278 \\
+    std & 22.04 & \textit{\textbf{21.03}} & 21.15 & 23.9 & 15.32 \\
+    \bottomrule
+  \end{tabular}
+\end{minipage}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=1\linewidth]{logos/18_undisturbed_fast_translation_with_breaks_B.png}
-    \caption{18\_undisturbed\_fast\_translation\_with\_breaks\_B}
-    \label{fig:18_undisturbed_fast_trans}
-\end{figure}
+\vspace{0.5cm}
+
+\begin{minipage}{0.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth,height=0.35\textheight]{graphs/qs_ml_x.png}
+  \captionof{figure}{Quasi-Static Error with Denoising (X-axis)}
+\end{minipage}%
 \hfill
+\begin{minipage}{0.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{graphs/qs_no_ml_x.png}
+  \captionof{figure}{Quasi-Static Error without Denoising (X-axis)}
+\end{minipage}
+
 \end{frame}
 
-\begin{frame}{Results of $\alpha$-toggling and noise removal across individual files}
+\begin{frame}{Quasi-Static Error Metrics in Y-axis}
 \small
-\textcolor{red}{Red - Madgwick Filter} | \textcolor{green}{Green - Complementary Filter} | \textcolor{blue}{Blue - Our Proposed Filter} \\ 
-\textbf{X-axis:} iterations \\ \textbf{Y-axis:} mean error(lower the better)
+\begin{minipage}{\textwidth}
+  \centering
+  \scriptsize
+  \captionof{table}{Quasi-Static error metrics (°) in Y-axis}
+  \label{tab:quasi_static_y}
+  \begin{tabular}{lccccc}
+    \toprule
+    Metric & Prop. (ML) & Prop. (no ML) & Madg. & Aqua & EKF \\
+    \midrule
+    mean & 18.04 & 17.36 & 14.77 & \textit{\textbf{11.44}} & 40.89 \\
+    std & 23.01 & 24.10 & 23.89 & 23.92 & \textit{\textbf{17.5}} \\
+    \bottomrule
+  \end{tabular}
+\end{minipage}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=1\linewidth]{logos/23_undisturbed_fast_combined_360s.png}
-    \caption{23\_undisturbed\_fast\_combined\_360s}
-    \label{fig:23_undisturbed360}
-\end{figure}
+\vspace{0.5cm}
+
+\begin{minipage}{0.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth,height=0.35\textheight]{graphs/qs_ml_y.png}
+  \captionof{figure}{Quasi-Static Error with Denoising (Y-axis)}
+\end{minipage}%
 \hfill
+\begin{minipage}{0.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{graphs/qs_no_ml_y.png}
+  \captionof{figure}{Quasi-Static Error without Denoising (Y-axis)}
+\end{minipage}
+
 \end{frame}
+
+\begin{frame}{Quasi-Static Error Metrics in Z-axis}
+\small
+\begin{minipage}{\textwidth}
+  \centering
+  \scriptsize
+  \captionof{table}{Quasi-Static error metrics (°) in Z-axis}
+  \label{tab:quasi_static_z}
+  \begin{tabular}{lccccc}
+    \toprule
+    Metric & Prop. (ML) & Prop. (no ML) & Madg. & Aqua & EKF \\
+    \midrule
+    mean & 9.84 & \textit{\textbf{7.5}} & 7.98 & 10.08 & 32.2 \\
+    std & 10.33 & \textit{\textbf{7.26}} & 9.77 & 18.77 & 18.122 \\
+    \bottomrule
+  \end{tabular}
+\end{minipage}
+
+\vspace{0.5cm}
+
+\begin{minipage}{0.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth,height=0.35\textheight]{graphs/qs_ml_z.png}
+  \captionof{figure}{Quasi-Static Error with Denoising (Z-axis)}
+\end{minipage}%
+\hfill
+\begin{minipage}{0.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{graphs/qs_no_ml_z.png}
+  \captionof{figure}{Quasi-Static Error without Denoising (Z-axis)}
+\end{minipage}
+
+\end{frame}
+
+\begin{frame}{Dynamic Error Metrics in X-axis}
+\small
+\begin{minipage}{\textwidth}
+  \centering
+  \scriptsize
+  \captionof{table}{Dynamic error metrics (°) in X-axis}
+  \label{tab:dynamic_x}
+  \begin{tabular}{lccccc}
+    \toprule
+    Metric & Prop. (ML) & Prop. (no ML) & Madg. & Aqua & EKF \\
+    \midrule
+    mean & 30.87 & \textit{\textbf{22.12}} & 32.35 & 24.36 & 47.57 \\
+    std & 31.33 & \textit{\textbf{18.87}} & 31.86 & 31.06 & 19.17 \\
+    \bottomrule
+  \end{tabular}
+\end{minipage}
+
+\vspace{0.5cm}
+
+\begin{minipage}{0.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth,height=0.35\textheight]{graphs/dynamic_ml_x.png}
+  \captionof{figure}{Dynamic Error with Denoising (X-axis)}
+\end{minipage}%
+\hfill
+\begin{minipage}{0.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth,height=0.35\textheight]{graphs/dynamic_no_ml_x.png}
+  \captionof{figure}{Dynamic Error without Denoising (X-axis)}
+\end{minipage}
+
+\end{frame}
+
+\begin{frame}{Dynamic Error Metrics in Y-axis}
+\small
+\begin{minipage}{\textwidth}
+  \centering
+  \scriptsize
+  \captionof{table}{Dynamic error metrics (°) in Y-axis}
+  \label{tab:dynamic_y}
+  \begin{tabular}{lccccc}
+    \toprule
+    Metric & Prop. (ML) & Prop. (no ML) & Madg. & Aqua & EKF \\
+    \midrule
+    mean & 26.92 & 33.97 & 29.90 & \textit{\textbf{22.54}} & 44.08 \\
+    std & 28.90 & 29.95 & 30.74 & 28.58 & \textit{\textbf{24.48}} \\
+    \bottomrule
+  \end{tabular}
+\end{minipage}
+
+\vspace{0.5cm}
+
+\begin{minipage}{0.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth,height=0.35\textheight]{graphs/dynamic_ml_y.png}
+  \captionof{figure}{Dynamic Error with Denoising (Y-axis)}
+\end{minipage}%
+\hfill
+\begin{minipage}{0.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{graphs/dynamic_no_ml_y.png}
+  \captionof{figure}{Dynamic Error without Denoising (Y-axis)}
+\end{minipage}
+
+\end{frame}
+
+\begin{frame}{Dynamic Error Metrics in Z-axis}
+\small
+\begin{minipage}{\textwidth}
+  \centering
+  \scriptsize
+  \captionof{table}{Dynamic error metrics (°) in Z-axis}
+  \label{tab:dynamic_z}
+  \begin{tabular}{lccccc}
+    \toprule
+    Metric & Prop. (ML) & Prop. (no ML) & Madg. & Aqua & EKF \\
+    \midrule
+    mean & 29.80 & \textit{\textbf{10.14}} & 25.41 & 17.95 & 30.07 \\
+    std & 28.14 & \textit{\textbf{11.72}} & 26.86 & 24.03 & 17.38 \\
+    \bottomrule
+  \end{tabular}
+\end{minipage}
+
+\vspace{0.5cm}
+
+\begin{minipage}{0.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth,height=0.35\textheight]{graphs/dynamic_ml_z.png}
+  \captionof{figure}{Dynamic Error with Denoising (Z-axis)}
+\end{minipage}%
+\hfill
+\begin{minipage}{0.5\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{graphs/dynamic_no_ml_z.png}
+  \captionof{figure}{Dynamic Error without Denoising (Z-axis)}
+\end{minipage}
+
+\end{frame}
+
+\begin{frame}{Resource Consumption}
+\small
+\begin{table}[H]
+  \centering
+  \caption{Static Error Resource consumption per filter on RPI: average CPU (\%) and memory (MB).}
+  \label{tab:resource_consumption_static}
+  \begin{tabular}{lcc}
+    \toprule
+    Filter & CPU Usage (\%) & Memory Usage (MB) \\
+    \midrule
+    Proposed (ML)     & 58.6 & 145.65 \\
+    Proposed (-ML)    & 54.5 & 120.35 \\
+    Madgwick           & \textbf{\textit{1.75}} & 59.75 \\
+    EKF                & 3.12 & 59.77 \\
+    Aqua               & 2.32 & \textbf{\textit{59.69}} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+    
+\end{frame}
+
 
 \section{Shortcomings}
 
@@ -766,37 +975,14 @@ The charts only compare the results on 5 files of the cv\_set containing [8, 14,
     RANSAC loop and ensemble fitting are time‐intensive.
   \item \textbf{Generalizability:}
     Noticeable drop in performance on cross‐validation vs.\ test sets.
+  \item \textbf{Inconsistency in Axes:}
+    Model seems to perform much better in z-axis but can't keep up the consistency in x and y axes.
 \end{itemize}
 \end{frame}
 
+\section{Future Works accomplished from pre-defence}
 
-\section{Future Works}
-
-\begin{frame}{3-Axis Gimbal System for Algorithm Testing}
-\begin{columns}[T]
-  % Text column
-  \begin{column}{0.5\textwidth}
-    \begin{itemize}
-      \item \textbf{Structure:} Three servos mounted orthogonally for yaw, pitch, roll.
-      \item \textbf{Feedback:} External encoders on each axis provide precise ground-truth angles \cite{gimbal3}.
-      \item \textbf{Static Test:} Fix servos at known angles (e.g., 30°, 90°) and compare with algorithm output.
-      \item \textbf{Dynamic Test:} Command smooth trajectories (0°→90°) while logging servo vs.\ filter estimates.
-    \end{itemize}
-  \end{column}
-  
-  % Figure column
-  \begin{column}{0.48\textwidth}
-    \begin{figure}
-      \centering
-      \includegraphics[width=\linewidth]{logos/gimball.jpg}
-      \caption{Mechanical 3-axis gimbal with servo motors and encoders.}
-      \label{fig:gimbal_system}
-    \end{figure}
-  \end{column}
-\end{columns}
-\end{frame}
-
-\begin{frame}{Single-Axis Turntable with Manual Tilting}
+\begin{frame}{Built Single-Axis Turntable with Manual Tilting}
 \scriptsize
 \begin{columns}[T]
   % Text column
@@ -840,10 +1026,11 @@ The charts only compare the results on 5 files of the cv\_set containing [8, 14,
       \item Identical trajectories, speeds, and motion types.
     \end{itemize}
     \vspace{0.5em}
-    \textbf{Algorithms Under Test}
+    \textbf{Algorithms Tested}
     \begin{itemize}
       \item Extended Kalman Filter (EKF)
       \item Madgwick Filter
+      \item AQU Filter
       \item Proposed Modified Complementary Filter
     \end{itemize}
   \end{column}
@@ -868,6 +1055,15 @@ The charts only compare the results on 5 files of the cv\_set containing [8, 14,
     \textbf{Goal:} Assess whether the proposed filter improves accuracy and/or runtime under varied conditions.
   \end{column}
 \end{columns}
+\end{frame}
+
+\section{Future Works}
+\begin{frame}{Future Works}
+  \begin{itemize}
+    \item \textbf{Improving generlizability}
+    \item \textbf{Improving the error statistics on x and y axes}
+    \item \textbf{Improving computational cost and memory usage}
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Deployment Challenges \& Strategy}
