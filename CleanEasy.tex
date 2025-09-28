@@ -100,7 +100,7 @@
 \begin{columns}[T, totalwidth=\textwidth]
 
   % Left column: Real World Applications
-  \begin{column}{0.48\textwidth}
+  \begin{column}<1->{0.48\textwidth}
     \centering
     \textbf{Real World Applications} \\[0.5em]
 
@@ -115,7 +115,7 @@
   \end{column}
 
   % Right column: IMU and MARG Sensors
-  \begin{column}{0.48\textwidth}
+  \begin{column}<2->{0.48\textwidth}
     \centering
     \textbf{IMU and MARG Sensors} \\[0.5em]
 
@@ -130,12 +130,12 @@
 
 
 \begin{frame}{Sensor Fusion Concept}
-\begin{itemize}
+\begin{itemize}[<+->]
   \item Individual sensors have complementary strengths: 
     - \textbf{gyroscopes} measure rotation but \textcolor{red}{drift over time}, \textbf{accelerometers} measure tilt via gravity but are \textcolor{red}{noisy during movement}, \textbf{magnetometers} give heading but are \textcolor{red}{disturbed by local fields}.
   \item Sensor fusion algorithms (e.g., Kalman\cite{EKF}\cite{doubleEKF}\cite{quatEKF} or complementary filters\cite{compfilter}) combine these readings to obtain a stable orientation estimate. By using multiple sensors, we can \textcolor{blue}{“reduce orientation drift introduced through the gyroscope measurements”} using gravity and magnetic references.
 \end{itemize}
-\begin{block}{Goal}
+\begin{block}<3->{Goal}
     The goal is to filter out noise and biases: high-frequency noise from accelerometers is smoothed, while low-frequency gyro drift is corrected by accelerometer/magnetometer data, yielding a robust attitude estimate.
 \end{block}
 \end{frame}
@@ -184,22 +184,22 @@
 \begin{frame}{Complementary Filter (CF) Overview}
 \small
 
-\begin{block}{General Equation of the Weighted Sum}
+\begin{block}<1->{General Equation of the Weighted Sum}
   \[
     \theta(t) = (1 - \alpha)\,(\text{gyro-integrated angle}) + \alpha\,(\text{accel-derived angle})
   \]
 \end{block}
 
-\begin{itemize}
+\begin{itemize}[<+->]
   \item The blending weight \textbf{$\alpha$} (between 0 and 1) is tuned based on sensor characteristics. 
 \end{itemize}
 
 \vspace{0.5em}
 
-\begin{columns}[T,onlytextwidth]
+\begin{columns}<2->[T,onlytextwidth]
   % Left: Advantages
   \begin{column}{0.48\textwidth}
-    \begin{block}{\textbf{Advantages}}
+    \begin{exampleblock}{\textbf{Advantages}}
       \begin{itemize}
         \item Very simple and efficient to implement on microcontrollers.
         \item Requires minimal computation.
@@ -209,8 +209,8 @@
   \end{column}
 
   % Right: Disadvantages
-  \begin{column}{0.48\textwidth}
-    \begin{block}{\textbf{Disadvantages}}
+  \begin{column}<3->{0.48\textwidth}
+    \begin{exampleblock}{\textbf{Disadvantages}}
       \begin{itemize}
         \item Fixed filter gains cannot adapt to changing dynamics or sensor conditions.
         \item Gyroscope biases over time introduce drift if not perfectly zeroed.
@@ -227,12 +227,11 @@
 \section{Uses and Applications}
 
 \begin{frame}{Consequences of Poor Orientation Estimation}
-\begin{itemize}
+\begin{itemize}[<+->]
   \item In \textcolor{blue}{\textbf{VR/AR}}, \textbf{incorrect orientation} causes virtual objects to \textbf{lag or shift unexpectedly}, leading to \textcolor{red}{user disorientation or motion sickness}. The “reality” no longer matches the user’s motions.
   \item In \textcolor{blue}{\textbf{navigation (drones, aircraft, robotics)}}, \textbf{bad attitude estimates} can cause \textcolor{red}{control errors or crashes}. For example, a drone in strong magnetic interference may misread its yaw and slowly rotate off course.
   \item \textcolor{blue}{\textbf{Inertial systems}} are immune to jamming (no external signals needed), but they rely on \textbf{sensor accuracy}. If magnetic disturbances occur, a MARG system \textcolor{red}{“will over time result in a drift in the heading estimate”}.
 \end{itemize}
-Therefore, improving orientation accuracy is critical for safety and user experience.
 \end{frame}
 
 % \begin{frame}{Data-Driven and Machine Learning Methods}
@@ -594,38 +593,84 @@ Therefore, improving orientation accuracy is critical for safety and user experi
 % \end{frame}
 
 \begin{frame}{Gaps and Opportunities}
-\scriptsize
-\renewcommand{\arraystretch}{1.05}
+\tiny
+\begin{tabular}{p{0.47\textwidth} | p{0.47\textwidth}}
+\textbf{Problems} & \textbf{Solutions} \\ \hline
 
-\begin{tabular}{p{0.48\textwidth} p{0.48\textwidth}}
-\textbf{Gaps} & \textbf{Solutions} \\
-\hline
-
-\textbf{Lack of real-time adaptivity:} Static parameters cannot adapt to dynamic changes; unexpected accelerations degrade accuracy.
+\uncover<1->{ % Row 1
+\textbf{\textcolor{red}Lack of Real-Time Adaptivity:}  
+\begin{itemize}
+  \item Static parameters cannot adapt to dynamic changes \cite{madgwick2011estimation,compfilter,rosario2016smartphonequat}
+  \item Unexpected accelerations degrade accuracy \cite{vandijk2021mlreview}
+\end{itemize}
 &
-\textbf{Adaptive learning:} Dual-XGBoost adjusts fusion weights online and responds to abrupt motions/disturbances.
-\\ \hline
+\textbf{\textcolor{green}Adaptive Learning:}  
+\begin{itemize}
+  \item Dual-XGBoost adjusts fusion weights online
+  \item Responds dynamically to abrupt motions/disturbances
+\end{itemize}} \\ \hline
 
-\textbf{Lack of explicit noise prediction:} EKFs often assume constant noise and cannot predict drift; fail under temperature/vibration-induced changes.
+\uncover<2->{ % Row 2
+\textbf{\textcolor{red}Lack of Explicit Noise Prediction:}  
+\begin{itemize}
+  \item EKFs assume constant noise, can’t predict drift \cite{EKF,quatEKF,doubleEKF}
+  \item Fail under temperature/vibration-induced noise \cite{damagatla2024xgboostnoiseekf}
+\end{itemize}
 &
-\textbf{Predictive noise modeling:} XGBoost predicts gyro bias/variance from real-time data and learns time-varying noise models.
-\\ \hline
+\textbf{\textcolor{green}Predictive Noise Modeling:}  
+\begin{itemize}
+  \item XGBoost predicts gyro bias/variance in real-time
+  \item Learns time-varying noise for accuracy
+\end{itemize}} \\ \hline
 
-\textbf{Over-reliance on fixed gains:} Fixed gains cause large errors during dynamic motion and lead to under/over-correction.
+\uncover<3->{ % Row 3
+\textbf{\textcolor{red}Over-Reliance on Fixed Gains:}  
+\begin{itemize}
+  \item Fixed gains cause large errors in dynamic motions \cite{vandijk2021mlreview,madgwick2011estimation}
+  \item Hard to balance under- vs over-correction \cite{shao2023variablegainflushsesnsing,EKF}
+\end{itemize}
 &
-\textbf{Dynamic gain tuning:} XGBoost adaptively infers fusion weights from IMU readings, removing manual tuning.
-\\ \hline
+\textbf{\textcolor{green}Dynamic Gain Tuning:}  
+\begin{itemize}
+  \item XGBoost adaptively infers fusion weights
+  \item Removes need for manual tuning
+\end{itemize}} \\ \hline
 
-\textbf{Heavy computational burden:} DNNs and advanced EKFs are typically too heavy for real-time embedded systems (need GPUs/high-power processors).
+\uncover<4->{ % Row 4
+\textbf{\textcolor{red}Heavy Computational Burden:}  
+\begin{itemize}
+  \item DNNs and advanced EKFs too heavy for real-time \cite{golroudbari2023cnn6DOF,CEAS-GNC-2019-036,brossard2020openloopCNN}
+  \item Require GPUs or powerful processors \cite{chen2024dlsurvey}
+\end{itemize}
 &
-\textbf{Lightweight inference:} XGBoost offers efficient runtime (fast tree traversal, no heavy matrix ops) and suits microcontrollers.
-\\ \hline
+\textbf{\textcolor{green}Lightweight Inference:}  
+\begin{itemize}
+  \item XGBoost is runtime efficient
+  \item Suitable for micro-controllers
+\end{itemize}} \\ \hline
 
-\textbf{Loss of interpretability:} Deep models are black-box; lack physical insight and are harder to debug.
+\uncover<5->{ % Row 5
+\textbf{\textcolor{red}Loss of Interpretability:}  
+\begin{itemize}
+  \item Deep models act as black-box \cite{golroudbari2023cnn6DOF,CEAS-GNC-2019-036,brossard2020openloopCNN}
+  \item Lack of physical insight complicates debugging \cite{chen2024dlsurvey}
+\end{itemize}
 &
-\textbf{Transparent design:} XGBoost trees are interpretable (splits, feature importance) and keep fusion logic tied to physics.
-\\ \hline
+\textbf{\textcolor{green}Transparent Design:}  
+\begin{itemize}
+  \item XGBoost trees are interpretable
+  \item Fusion logic tied explicitly to physics
+\end{itemize}} \\ 
+
 \end{tabular}
+\end{frame}
+
+\begin{frame}{Our Contribution}
+\begin{itemize}[<+->]
+    \item \textbf{$\alpha$-Toggling Based on Data-Driven Movement Prediction} For deciding when to fuse accelerometer and when to reply on gyroscope readings alone. 
+    \item \textbf{Denoising Based on Tree-Based Model:} Predicting the noise and filtering it out of the raw readings before computation. 
+    \item \textbf{Construction of a Mechanical Turntable for Real-Life Evaluation:} For evaluating the validity of our model based on real-life movement and scenarios.  
+\end{itemize}
 
 \end{frame}
 
@@ -637,8 +682,8 @@ Therefore, improving orientation accuracy is critical for safety and user experi
 \begin{columns}[T]
   % Noise Prediction & Removal
   \begin{column}{0.48\textwidth}
-    \begin{block}{{Noise Prediction \& Removal} \cite{brossard2020openloopCNN}}
-      \begin{itemize}
+    \begin{block}<1->{{Noise Prediction \& Removal} \cite{brossard2020openloopCNN}}
+      \begin{itemize}[<+->]
         \item Input raw sensor (acc, mag, gyro) columns: 
           $a_i=(a_{ix},a_{iy},a_{iz})$, 
           $m_i=(m_{ix},m_{iy},m_{iz})$, 
@@ -661,8 +706,8 @@ Therefore, improving orientation accuracy is critical for safety and user experi
   \end{column}
   % Movement Prediction & Alpha Toggling
   \begin{column}{0.48\textwidth}
-    \begin{block}{{Movement Prediction \& $\alpha$ Toggling} \cite{vertzberger2022adaptive}}
-      \begin{itemize}
+    \begin{exampleblock}<5->{{Movement Prediction \& $\alpha$ Toggling} \cite{vertzberger2022adaptive}}
+      \begin{itemize}[<+->]
         \item Toggling Engine analyzes $g_i$ (gyro) patterns to classify motion state.
         \item Generates adaptive gain $\alpha$ based on predicted movement (static vs.\ dynamic).
         \item Compute gyro‐based update:
@@ -704,22 +749,33 @@ Therefore, improving orientation accuracy is critical for safety and user experi
 % Slide 1: Dataset Overview
 \begin{frame}{Dataset Overview: BROAD}
 \begin{itemize}
-  \item \textbf{Berlin Robust Orientation Estimation Assessment Dataset (BROAD)} \cite{BROAD}
-  \item \textbf{Trials:} 39 recordings of predefined motions
-  \item \textbf{Sampling:}
+  \item<1-> \textbf{Berlin Robust Orientation Estimation Assessment Dataset (BROAD)} \cite{BROAD}
+  \item<2-> \textbf{Trials:} 39 recordings of predefined motions
+  \item<3-> \textbf{Sampling:}
     \begin{itemize}
       \item OptiTrack ground truth: position {opt\_pos} \& orientation {opt\_quat} at 120Hz
       \item IMU MARG data: accelerometer, gyroscope, magnetometer at \SI{286}{Hz}
       \item Boolean movement flag per timestamp
     \end{itemize}
-  \item \textbf{Hardware:}
+  \item<4-> \textbf{Hardware:}
     \begin{itemize}
       \item Custom 3D-printed mount with myon aktos-t 9-axis IMU
       \item Optical markers for tracking by OptiTrack OMC system
     \end{itemize}
-  \item \textbf{Motion types:} undisturbed (rotation, translation, combined; slow/fast) and disturbed (tapping, vibration, magnets, office, mixed)
-  \item Detailed protocol in the BROAD paper: \url{https://www.mdpi.com/2306-5729/6/7/72}
+  \item<5-> \textbf{Motion types:} undisturbed (rotation, translation, combined; slow/fast) and disturbed (tapping, vibration, magnets, office, mixed)
+  \item<6-> Detailed protocol in the BROAD paper: \url{https://www.mdpi.com/2306-5729/6/7/72}
 \end{itemize}
+\end{frame}
+
+\begin{frame}{Dataset Snapshot}
+\hfill
+\begin{figure}
+    \centering
+    \includegraphics[width=0.55\linewidth]{logos/dataset_snapshot.png}
+    \caption{Snapshot of the recording of the file "01_undisturbed_slow_rotation_A"}
+    \label{fig:imuapp}
+\end{figure}
+\hfill
 \end{frame}
 
 % Slide 2: Trial Categories & Figures
@@ -727,7 +783,7 @@ Therefore, improving orientation accuracy is critical for safety and user experi
 \scriptsize
 \begin{columns}[T]
   % Left: table
-  \begin{column}{0.48\textwidth}
+  \begin{column}<1->{0.48\textwidth}
       \begin{tabular}{|p{0.30\textwidth}|p{0.12\textwidth}|p{0.10\textwidth}|}
         \hline
         \textbf{Motion Type} & \textbf{Speed} & \textbf{Indices} \\ \hline
@@ -750,7 +806,7 @@ Therefore, improving orientation accuracy is critical for safety and user experi
   \end{column}
 
   % Right: figures
-  \begin{column}{0.5\textwidth}
+  \begin{column}<2->{0.5\textwidth}
     \begin{figure}
       \centering
       \begin{subfigure}[t]{\columnwidth}
@@ -772,7 +828,7 @@ Therefore, improving orientation accuracy is critical for safety and user experi
 \section{Experimental Setup}
 
 \begin{frame}{Training to Predict Movement & Noise: Dataset}
-\begin{itemize}
+\begin{itemize}[<+->]
     \item \textbf{Movement Prediction Model:} Train \textbf{XGB classifier} to predict if the IMU is in motion.
     \item \textbf{Noise Prediction Model:} Train \textbf{XGB regressor} to predict noises in raw accelerometer data.
     \item \textbf{Implementation of the Modified CF:} Implementation of our proposed algorithm in python and evaluating it through the BROAD dataset trials.
@@ -781,7 +837,7 @@ Therefore, improving orientation accuracy is critical for safety and user experi
 \end{frame}
 
 \begin{frame}{Testing: Dataset}
-  \begin{itemize}
+  \begin{itemize}[<+->]
     \item \textbf{Evaluation Setup:}  
     Cross-validation set \{8, 14, 17, 22, 30\} used to estimate quaternions; error = mean quaternion distance between estimated and ground truth per recording.
     
@@ -798,22 +854,22 @@ Therefore, improving orientation accuracy is critical for safety and user experi
 % Frame 1: Experimental Turntable
 \begin{frame}{Testing: Mechanical Turntable}
   \begin{itemize}
-      \item \textbf{Design \& Construction:}  
+      \item<1-> \textbf{Design \& Construction:}  
       Built in Fusion360, 3D-printed PLA/ABS parts, 28 cm diameter, 1.5 kg mass.  
       Manual actuation (no motor); rotation applied by hand.
   
-      \item \textbf{Mechanical Components:}  
+      \item<2-> \textbf{Mechanical Components:}  
       \begin{itemize}
           \item Circular rotating disk on 6010 bearing.  
           \item Box-shaped support structure with encoder magnet in base.  
           \item AS5600 magnetic encoder for ground-truth sensing.
       \end{itemize}
   
-      \item \textbf{Ground-Truth Encoder (AS5600):}  
+      \item<3-> \textbf{Ground-Truth Encoder (AS5600):}  
       12-bit resolution ($\approx 0.087^{\circ}$/step), $\pm 0.4^{\circ}$ typical accuracy, up to $\pm 1.4^{\circ}$ deviation under misalignment.  
       Latency: 1--2 ms, outputs via I2C, PWM, or analog.
   
-      \item \textbf{On-Disk Payload:}  
+      \item<4-> \textbf{On-Disk Payload:}  
       Raspberry Pi 5 (8 GB), MPU9250 MARG sensor, 20,000 mAh power bank.
   \end{itemize}
   \end{frame}
@@ -832,14 +888,14 @@ Therefore, improving orientation accuracy is critical for safety and user experi
   % Frame 2: Motion Protocols & Software
   \begin{frame}{Motion Protocols \& Software Setup}
   \begin{itemize}
-      \item \textbf{Motion Protocols:}
+      \item<1-> \textbf{Motion Protocols:}
       \begin{itemize}
           \item \textbf{Static:} No movement; tests sensor stability and drift.  
           \item \textbf{Quasi-static:} Slow $0^{\circ}\!\!-\!180^{\circ}$ rotation (clockwise \& counterclockwise), two cycles per axis.  
           \item \textbf{Dynamic:} Continuous rapid rotations (3, 4, 5 turns per cycle).
       \end{itemize}
   
-      \item \textbf{Software Infrastructure:}  
+      \item<2-> \textbf{Software Infrastructure:}  
       \begin{itemize}
           \item Raspberry Pi runs 4 parallel Python scripts: Proposed Filter, AQUA, EKF, Madgwick.  
           \item Reads MPU9250 sensor (accel, gyro, mag) via I2C.  
@@ -847,7 +903,7 @@ Therefore, improving orientation accuracy is critical for safety and user experi
           \item All filter outputs + ground truth logged into CSV for post-processing.
       \end{itemize}
   
-      \item \textbf{Result Generation:}  
+      \item<3-> \textbf{Result Generation:}  
       Quaternion absolute distance metric (Sec. 9.2) computed and plotted to compare filter performance under each motion type.
   \end{itemize}
   \end{frame}
@@ -885,7 +941,7 @@ Therefore, improving orientation accuracy is critical for safety and user experi
 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth,height=0.65\textheight,keepaspectratio]{logos/barchart_correct_slide.png}
+    \includegraphics[width=\linewidth,height=0.65\textheight,keepaspectratio]{logos/barchart_fixed.png}
     \caption{Mean error statistics (with and with denonising) across cross-validation files in BROAD}
     \label{fig:rmnoise_chart}
 \end{figure}
@@ -1151,18 +1207,18 @@ Therefore, improving orientation accuracy is critical for safety and user experi
 
 \begin{frame}{Shortcomings of Our Data‐Driven CF}
 \begin{itemize}
-  \item \textbf{Model Size \& Memory:}
+  \item<1-> \textbf{Model Size \& Memory:}
     XGBoost inference is $O(\log n)$ per tree (depth=15, 6 vars, 15 estimators) → wide trees consume significant memory.
-  \item \textbf{Computational Overhead:}
+  \item<2-> \textbf{Computational Overhead:}
     \begin{itemize}
       \item Matrix exponentiation for $R_g$ rotations.
       \item RANSAC‐based training adds extra latency.
     \end{itemize}
-  \item \textbf{Training Time:}
+  \item<3-> \textbf{Training Time:}
     RANSAC loop and ensemble fitting are time‐intensive.
-  \item \textbf{Generalizability:}
+  \item<4-> \textbf{Generalizability:}
     Noticeable drop in performance on cross‐validation vs.\ test sets.
-  \item \textbf{Inconsistency in Axes:}
+  \item<5-> \textbf{Inconsistency in Axes:}
     Model seems to perform much better in z-axis but can't keep up the consistency in x and y axes.
 \end{itemize}
 \end{frame}
@@ -1246,7 +1302,7 @@ Therefore, improving orientation accuracy is critical for safety and user experi
 
 \section{Future Works}
 \begin{frame}{Future Works}
-  \begin{itemize}
+  \begin{itemize}[<+->]
     \item \textbf{Improving generlizability}
     \item \textbf{Improving the error statistics on x and y axes}
     \item \textbf{Improving computational cost and memory usage}
@@ -1259,7 +1315,7 @@ Therefore, improving orientation accuracy is critical for safety and user experi
   % Left column: Challenge
   \begin{column}{0.48\textwidth}
     \begin{block}{{\textbf{Challenge: Resource Constraints}}}
-      \begin{itemize}
+      \begin{itemize}[<+->]
         \item XGBoost model size: 25 MB flash memory  
         \item ESP32 max flash: 4 MB  
         \item Limited CPU and RAM on embedded platforms  
@@ -1270,7 +1326,7 @@ Therefore, improving orientation accuracy is critical for safety and user experi
   % Right column: Solution
   \begin{column}{0.48\textwidth}
     \begin{exampleblock}{{\textbf{Proposed Strategy}}}
-      \begin{itemize}
+      \begin{itemize}[<+->]
         \item \textbf{Model Optimization:}  
           \begin{itemize}
             \item Quantization \& pruning  
@@ -1288,7 +1344,7 @@ Therefore, improving orientation accuracy is critical for safety and user experi
 \end{columns}
 \end{frame} 
 
-% Sample bibliography (not shown in presentation, just for reference)
+Sample bibliography (not shown in presentation, just for reference)
 \section{References}
 \begin{frame}[allowframebreaks]{References}
     \small
